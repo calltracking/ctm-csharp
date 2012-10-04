@@ -50,6 +50,7 @@ namespace CTM {
 			}
 			//_req.AllowAutoRedirect = true;
 			_req.UserAgent = "CTM/1.0 .NET-SDK";
+			//Console.WriteLine("Request: " + method + " : " + _url);
 
 			foreach (DictionaryEntry kv in headers) {
 				_req.Headers.Add((String)kv.Key, (String)kv.Value);
@@ -75,6 +76,12 @@ namespace CTM {
 		}
 		public Response post(Hashtable parameters=null) {
 			return custom("POST", parameters);
+		}
+		public Response put(Hashtable parameters=null) {
+			return custom("PUT", parameters);
+		}
+		public Response delete(Hashtable parameters=null) {
+			return custom("DELETE", parameters);
 		}
 
 		public Response custom(string method, Hashtable parameters=null) {

@@ -1,0 +1,6 @@
+.env
+ctm.dll
+test.exe
+test.exe.mdb
+ctm.dll.mdb
+*.swp

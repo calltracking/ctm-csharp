@@ -23,5 +23,12 @@ namespace CTM {
       return new AuthToken((string)res.data["token"], (int)res.data["first_account"]["id"]);
     }
 
+    /*
+     * For master account's switch to auth token account
+     */
+    public void switch_account(int account_id) {
+      this.account_id = account_id;
+    }
+
   }
 }
