@@ -1,5 +1,5 @@
 /*
-	CTM Sources API
+  CTM Sources API
 */
 using System;
 using System.Json;
@@ -7,14 +7,14 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace CTM {
-	public class Source {
+  public class Source {
     public AuthToken token;
     public string name;
     public string referrer;
     public string location;
     public int position;
 
-	  public Source(AuthToken token, string name, string referrer, string location, int position) {
+    public Source(AuthToken token, string name, string referrer, string location, int position) {
       this.token = token;
       this.name = name;
       this.referrer = referrer;
@@ -41,5 +41,5 @@ namespace CTM {
 
     }
 
-	}
+  }
 }

@@ -1,5 +1,5 @@
 /*
-	CTM Accounts API
+  CTM Accounts API
 */
 using System;
 using System.Json;
@@ -7,23 +7,23 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace CTM {
-	public class Account {
-		public int id;
+  public class Account {
+    public int id;
     public string name;
     public string status;
     public CTM.AuthToken token;
 
-		public Account(int id, string name, string status, CTM.AuthToken auth_token) {
-			this.id = id;
+    public Account(int id, string name, string status, CTM.AuthToken auth_token) {
+      this.id = id;
       token = auth_token;
       this.name = name;
       this.status = status;
-		}
+    }
 
     /*
      * List accounts accessible to the given auth token
      */
-		public static Page<Account> list(CTM.AuthToken token, int page=0, string status="active") {
+    public static Page<Account> list(CTM.AuthToken token, int page=0, string status="active") {
       string url = CTM.Config.Endpoint() + "/accounts.json";
       CTM.Request request = new CTM.Request(url, token);
       Hashtable parameters = new Hashtable();
@@ -52,5 +52,5 @@ namespace CTM {
       return new Account((int)res.data["id"], (string)res.data["name"], "active", token);
     }
 
-	}
+  }
 }

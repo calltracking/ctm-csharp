@@ -1,5 +1,5 @@
 /*
-	CTM Numbers API
+  CTM Numbers API
 */
 using System;
 using System.Json;
@@ -7,18 +7,18 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace CTM {
-	public class Number {
-		public int id;
+  public class Number {
+    public int id;
     public string name;
-		public string number;
+    public string number;
     public CTM.AuthToken token;
 
-		public Number(int id, string _number, CTM.AuthToken auth_token, string name=null) {
-			this.id = id;
-			number = _number;
+    public Number(int id, string _number, CTM.AuthToken auth_token, string name=null) {
+      this.id = id;
+      number = _number;
       token = auth_token;
       this.name = name;
-		}
+    }
 
     /*
      * GET a number by id
@@ -48,7 +48,7 @@ namespace CTM {
     /*
      * Find numbers available for purchase within the given areacode and country code
      */
-		public static Number[] search(CTM.AuthToken token, string areacode, string country_code="US") {
+    public static Number[] search(CTM.AuthToken token, string areacode, string country_code="US") {
       string url = CTM.Config.Endpoint() + "/accounts/" + token.account_id + "/numbers/search.json";
       CTM.Request request = new CTM.Request(url, token);
       Hashtable parameters = new Hashtable();
@@ -61,13 +61,13 @@ namespace CTM {
         numbers[index++] = new Number(-1, (string)number.Value["phone_number"], token);
       }
       return numbers;
-		}
+    }
 
     /*
      * Purchase a number, the number should be the full digit string from the .number within the list of numbers returned from
      * Number#search
      */
-		public static Number buy(CTM.AuthToken token, string number) {
+    public static Number buy(CTM.AuthToken token, string number) {
       string url = CTM.Config.Endpoint() + "/accounts/" + token.account_id + "/numbers.json";
       CTM.Request request = new CTM.Request(url, token);
       Hashtable parameters = new Hashtable();
@@ -78,12 +78,12 @@ namespace CTM {
       } else {
         return null;
       }
-		}
+    }
 
     /*
      * List numbers in the current account
      */
-		public static Page<Number> list(CTM.AuthToken token, int page=0) {
+    public static Page<Number> list(CTM.AuthToken token, int page=0) {
       string url = CTM.Config.Endpoint() + "/accounts/" + token.account_id + "/numbers.json";
       CTM.Request request = new CTM.Request(url, token);
       Hashtable parameters = new Hashtable();
@@ -101,7 +101,7 @@ namespace CTM {
       return true;
     }
 
-		public bool addReceivingNumber(string number) {
+    public bool addReceivingNumber(string number) {
       if (this.id < 1) { return false; }
       string url = CTM.Config.Endpoint() + "/accounts/" + token.account_id + "/numbers/" + this.id + "/receiving_numbers.json";
       CTM.Request request = new CTM.Request(url, token);
@@ -113,11 +113,11 @@ namespace CTM {
       } else {
         return false;
       }
-		}
-		public Source addTrackingSource(string name, string referrer, string location, int position) {
+    }
+    public Source addTrackingSource(string name, string referrer, string location, int position) {
       Source source = new Source(this.token, name, referrer, location, position);
       source.addToNumber(this);
       return source;
-		}
-	}
+    }
+  }
 }
