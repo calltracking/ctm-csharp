@@ -20,13 +20,26 @@ namespace CTM {
 
       ListAccounts(token);
 
-      Account account = CreateAccount(token);
-      token.switch_account(account.id);
+      //Account account = CreateAccount(token);
+      //token.switch_account(account.id);
 
 //      Number number = PurchaseAndConfigureNewNumber(token);
 //      SingleNumber(token, number.id);
 
-      ListNumbers(token);
+      //ListNumbers(token);
+
+			/*
+				query all calls by the given source between the given date range
+			*/
+			Filter[] filters = new Filter[3];
+			filters[0] = new Filter("start_date", "2012-08-01");
+			filters[1] = new Filter("end_date", "2012-08-31");
+			filters[2] = new Filter("source", "Google Paid");
+			Report[] reports = new Report[1];
+			// note: http://localhost:8888/ is in examples/report_server.cs
+			reports[0] = new Report("my test report", "sum", "source", "call", "http://localhost:8888/", filters);
+			
+			Report.Query(token, reports);
 
 		}
 
