@@ -48,12 +48,35 @@ namespace CTM {
     /*
      * Find numbers available for purchase within the given areacode and country code
      */
-    public static Number[] search(CTM.AuthToken token, string areacode, string country_code="US") {
+    public static Number[] search(CTM.AuthToken token, string areacode, string country_code="US", string pattern="") {
       string url = CTM.Config.Endpoint() + "/accounts/" + token.account_id + "/numbers/search.json";
       CTM.Request request = new CTM.Request(url, token);
       Hashtable parameters = new Hashtable();
       parameters["area_code"] = areacode;
+      parameters["searchby"] = "area";
       parameters["country_code"] = country_code;
+      parameters["pattern"] = pattern;
+      CTM.Response res = request.get(parameters);
+      int index = 0;
+      Number[] numbers = new Number[res.data["results"].Count];
+      foreach (KeyValuePair<string,System.Json.JsonValue> number in res.data["results"]) {
+        numbers[index++] = new Number(-1, (string)number.Value["phone_number"], token);
+      }
+      return numbers;
+    }
+
+    /*
+     * Find numbers available for purchase within the given areacode and country code
+     * toll free is US or UK
+     */
+    public static Number[] search_tollfree(CTM.AuthToken token, string areacode, string country_code="US", string pattern="") {
+      string url = CTM.Config.Endpoint() + "/accounts/" + token.account_id + "/numbers/search.json";
+      CTM.Request request = new CTM.Request(url, token);
+      Hashtable parameters = new Hashtable();
+      parameters["area_code"] = areacode;
+      parameters["searchby"] = "tollfree";
+      parameters["country_code"] = country_code;
+      parameters["pattern"] = pattern;
       CTM.Response res = request.get(parameters);
       int index = 0;
       Number[] numbers = new Number[res.data["results"].Count];

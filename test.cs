@@ -12,7 +12,7 @@ namespace CTM {
                                             Environment.GetEnvironmentVariable("CTM_API_SECRET"));
       Console.WriteLine("got token: " + token.auth_token);
 
-      // PurchaseAndConfigureNewNumber(token);
+      PurchaseAndConfigureNewNumber(token);
 
       ListNumbers(token);
 
