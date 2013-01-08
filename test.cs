@@ -83,7 +83,8 @@ namespace CTM {
 
     static Number PurchaseAndConfigureNewNumber(AuthToken token) {
       // search for some numbers in 410 area code
-      Number[] numbers = Number.search(token, "410");
+      Number[] numbers = Number.search(token, "410");//, "US", "55555");
+      if (numbers.Length == 0) { return null; }
 
       foreach(Number num in numbers) {
         Console.WriteLine("Found Number: " + num.number);

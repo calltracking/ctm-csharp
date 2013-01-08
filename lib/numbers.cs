@@ -58,9 +58,14 @@ namespace CTM {
       parameters["pattern"] = pattern;
       CTM.Response res = request.get(parameters);
       int index = 0;
-      Number[] numbers = new Number[res.data["results"].Count];
-      foreach (KeyValuePair<string,System.Json.JsonValue> number in res.data["results"]) {
-        numbers[index++] = new Number(-1, (string)number.Value["phone_number"], token);
+      Number[] numbers;
+      if (res.data.ContainsKey("results")) {
+        numbers = new Number[res.data["results"].Count];
+        foreach (KeyValuePair<string,System.Json.JsonValue> number in res.data["results"]) {
+          numbers[index++] = new Number(-1, (string)number.Value["phone_number"], token);
+        }
+      } else {
+        numbers = new Number[0];
       }
       return numbers;
     }
