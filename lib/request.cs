@@ -62,7 +62,12 @@ namespace CTM {
         stream.Write(paramDataBytes, 0, paramDataBytes.Length);
         stream.Close();
       }
-      WebResponse res = _req.GetResponse();
+      WebResponse res = null;
+      try {
+        res = _req.GetResponse();
+      } catch(WebException e) {
+        res = e.Response;
+      }
 
       StreamReader web = new StreamReader(res.GetResponseStream(), Encoding.UTF8);
       Response ctmRes = new Response(web.ReadToEnd());

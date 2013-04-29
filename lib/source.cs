@@ -23,7 +23,7 @@ namespace CTM {
     }
 
     public bool addToNumber(Number number) {
-      if (number.id < 1) { return false; }
+      if (number.id == "") { return false; }
       string url = CTM.Config.Endpoint() + "/accounts/" + token.account_id + "/numbers/" + number.id + "/tracking_sources.json";
       CTM.Request request = new CTM.Request(url, token);
       Hashtable parameters = new Hashtable();

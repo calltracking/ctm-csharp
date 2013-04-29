@@ -8,12 +8,13 @@ using System.Collections.Generic;
 
 namespace CTM {
   public class Number {
-    public int id;
+    public string id;
     public string name;
     public string number;
+    public string error;
     public CTM.AuthToken token;
 
-    public Number(int id, string _number, CTM.AuthToken auth_token, string name=null) {
+    public Number(string id, string _number, CTM.AuthToken auth_token, string name=null) {
       this.id = id;
       number = _number;
       token = auth_token;
@@ -23,12 +24,12 @@ namespace CTM {
     /*
      * GET a number by id
      */
-    public static Number get(CTM.AuthToken token, int id) {
-      string url = CTM.Config.Endpoint() + "/accounts/" + token.account_id + "/numbers/" + id.ToString() + ".json";
+    public static Number get(CTM.AuthToken token, string id) {
+      string url = CTM.Config.Endpoint() + "/accounts/" + token.account_id + "/numbers/" + id + ".json";
       CTM.Request request = new CTM.Request(url, token);
       Hashtable parameters = new Hashtable();
       CTM.Response res = request.get(parameters);
-      Number number = new Number((int)res.data["id"], (string)res.data["number"], token, (string)res.data["name"]);
+      Number number = new Number((string)res.data["id"], (string)res.data["number"], token, (string)res.data["name"]);
       return number;
     }
 
@@ -36,7 +37,7 @@ namespace CTM {
      * Update the number e.g. save the name
      */
     public bool save() {
-      string url = CTM.Config.Endpoint() + "/accounts/" + token.account_id + "/numbers/" + this.id.ToString() + ".json";
+      string url = CTM.Config.Endpoint() + "/accounts/" + token.account_id + "/numbers/" + this.id + ".json";
       CTM.Request request = new CTM.Request(url, token);
       Hashtable parameters = new Hashtable();
       parameters["name"] = this.name;
@@ -62,7 +63,7 @@ namespace CTM {
       if (res.data.ContainsKey("results")) {
         numbers = new Number[res.data["results"].Count];
         foreach (KeyValuePair<string,System.Json.JsonValue> number in res.data["results"]) {
-          numbers[index++] = new Number(-1, (string)number.Value["phone_number"], token);
+          numbers[index++] = new Number("", (string)number.Value["phone_number"], token);
         }
       } else {
         numbers = new Number[0];
@@ -86,7 +87,7 @@ namespace CTM {
       int index = 0;
       Number[] numbers = new Number[res.data["results"].Count];
       foreach (KeyValuePair<string,System.Json.JsonValue> number in res.data["results"]) {
-        numbers[index++] = new Number(-1, (string)number.Value["phone_number"], token);
+        numbers[index++] = new Number("", (string)number.Value["phone_number"], token);
       }
       return numbers;
     }
@@ -102,7 +103,7 @@ namespace CTM {
       parameters["phone_number"] = number;
       CTM.Response res = request.post(parameters);
       if ((string)res.data["status"] == "success") {
-        return new Number((int)res.data["number"]["id"], (string)res.data["number"]["number"], token);
+        return new Number((string)res.data["number"]["id"], (string)res.data["number"]["number"], token);
       } else {
         return null;
       }
@@ -120,7 +121,7 @@ namespace CTM {
       int index = 0;
       Number[] numbers = new Number[res.data["numbers"].Count];
       foreach (KeyValuePair<string,System.Json.JsonValue> number in res.data["numbers"]) {
-        numbers[index++] = new Number((int)number.Value["id"], (string)number.Value["number"], token);
+        numbers[index++] = new Number((string)number.Value["id"], (string)number.Value["number"], token);
       }
       return new Page<Number>(numbers, page, (int)res.data["total_pages"], (int)res.data["total_pages"]);
     }
@@ -130,7 +131,7 @@ namespace CTM {
     }
 
     public bool addReceivingNumber(string number) {
-      if (this.id < 1) { return false; }
+      if (this.id == "") { return false; }
       string url = CTM.Config.Endpoint() + "/accounts/" + token.account_id + "/numbers/" + this.id + "/receiving_numbers.json";
       CTM.Request request = new CTM.Request(url, token);
       Hashtable parameters = new Hashtable();
@@ -139,6 +140,7 @@ namespace CTM {
       if ((string)res.data["status"] == "success") {
         return true;
       } else {
+        this.error = (string)res.data["reason"];
         return false;
       }
     }

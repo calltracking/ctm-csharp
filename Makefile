@@ -13,5 +13,7 @@ test:
 #	mono test.exe
 http_server:
 	$(CC) examples/report_server.cs examples/http_server/http_request.cs examples/http_server/http_server.cs -lib:`pwd` -debug --stacktrace $(libs) -r:ctm.dll -r:NUnit.Framework.dll
+buy_number:
+	$(CC) examples/buy_number.cs -lib:`pwd` -debug --stacktrace $(libs) -r:ctm.dll -r:NUnit.Framework.dll
 clean:
 	rm -f test.exe test.exe.mdb ctm.dll

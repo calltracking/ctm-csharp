@@ -8,17 +8,17 @@ using NUnit.Framework;
 namespace CTM {
 	class Test {
 		static void Main(string[] args) {
-			AuthToken token = AuthToken.authorize(Environment.GetEnvironmentVariable("CTM_API_KEY"),
-                                            Environment.GetEnvironmentVariable("CTM_API_SECRET"));
+			AuthToken token = AuthToken.authorize(Environment.GetEnvironmentVariable("CTM_TOKEN"),
+                                            Environment.GetEnvironmentVariable("CTM_SECRET"));
       Console.WriteLine("got token: " + token.auth_token);
 
       PurchaseAndConfigureNewNumber(token);
 
-      ListNumbers(token);
+      // ListNumbers(token);
 
       //SingleNumber(token, 10373);
 
-      ListAccounts(token);
+      // ListAccounts(token);
 
       //Account account = CreateAccount(token);
       //token.switch_account(account.id);
@@ -31,7 +31,7 @@ namespace CTM {
 			/*
 				query all calls by the given source between the given date range
 			*/
-			Filter[] filters = new Filter[3];
+			/*Filter[] filters = new Filter[3];
 			filters[0] = new Filter("start_date", "2012-08-01");
 			filters[1] = new Filter("end_date", "2012-08-31");
 			filters[2] = new Filter("source", "Google Paid");
@@ -40,6 +40,7 @@ namespace CTM {
 			reports[0] = new Report("my test report", "sum", "source", "call", "http://localhost:8888/", filters);
 			
 			Report.Query(token, reports);
+      */
 
 		}
 
@@ -93,15 +94,19 @@ namespace CTM {
       Number number = Number.buy(token, numbers[0].number);
       //Number number = new Number(5416, "+1xxxxxxxxx", token);
       Console.WriteLine("Purchased Number: " + number.number + ", id: " + number.id);
+      //Number number = new Number("TPNC3C4B23C348AEC2EE54EFD301979CD2E3DB8E9F64D03380D8CCFD902D3BEF3AC", "+15005550006", token, "test number1");
 
-      number.addReceivingNumber("+18888980513");
+      if (!number.addReceivingNumber("+18888980510")) {
+        Console.WriteLine("failed with:" + number.error);
+        return number;
+      }
 
-      Source source = number.addTrackingSource("Test Source1", "google.com", "", 100);
+      Source source = number.addTrackingSource("Test Source2", "google.com", "", 80);
 
       return number;
     }
 
-    static void SingleNumber(AuthToken token, int id) {
+    static void SingleNumber(AuthToken token, string id) {
       Number number = Number.get(token, id);
 
       number.name = "Test";
