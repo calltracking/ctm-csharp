@@ -6,10 +6,11 @@ using CTM;
 using NUnit.Framework;
 
 namespace CTM {
-	class Test {
-		static void Main(string[] args) {
-			AuthToken token = AuthToken.authorize(Environment.GetEnvironmentVariable("CTM_TOKEN"),
+  class Test {
+    static void Main(string[] args) {
+      AuthToken token = AuthToken.authorize(Environment.GetEnvironmentVariable("CTM_TOKEN"),
                                             Environment.GetEnvironmentVariable("CTM_SECRET"));
+
       Console.WriteLine("got token: " + token.auth_token);
 
       PurchaseAndConfigureNewNumber(token);
@@ -38,7 +39,7 @@ namespace CTM {
 			Report[] reports = new Report[1];
 			// note: http://localhost:8888/ is in examples/report_server.cs
 			reports[0] = new Report("my test report", "sum", "source", "call", "http://localhost:8888/", filters);
-			
+
 			Report.Query(token, reports);
       */
 
@@ -52,7 +53,7 @@ namespace CTM {
       int page = 1;
       Page<Account> accounts;
       do {
-        
+
         accounts = Account.list(token, page);
         Console.WriteLine("Accounts Page: " + page.ToString());
 
@@ -69,7 +70,7 @@ namespace CTM {
       int page = 1;
       Page<Number> numbers;
       do {
-        
+
         numbers = Number.list(token, page);
         Console.WriteLine("Numbers Page: " + page.ToString());
 
@@ -102,6 +103,7 @@ namespace CTM {
       }
 
       Source source = number.addTrackingSource("Test Source2", "google.com", "", 80);
+      Console.WriteLine("Created source: " + source.name);
 
       return number;
     }
