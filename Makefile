@@ -1,8 +1,12 @@
 CC=mcs
 sources=lib/config.cs lib/request.cs lib/auth_token.cs lib/source.cs lib/numbers.cs lib/accounts.cs lib/page.cs lib/report.cs
-libs=-r:System.dll -r:System.Data.dll -r:System.Json.dll \
-     -r:System.ServiceModel.Web.dll -r:System.Web.dll \
-		 -r:System.Web.Services.dll -r:System.Runtime.Serialization.dll
+libs=	-r:System.dll \
+	-r:System.Data.dll \
+	-r:System.Json.dll \
+	-r:System.ServiceModel.Web.dll \
+	-r:System.Web.dll \
+	-r:System.Web.Services.dll \
+	-r:System.Runtime.Serialization.dll
 
 all: ctm.dll test http_server
 
