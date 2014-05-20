@@ -21,9 +21,9 @@ namespace Examples {
       this.port = port;
       this.response_status_init();
     }
-      
+
     public void listen() {
-      this.listener = new TcpListener(port);
+      this.listener = new TcpListener(IPAddress.Parse("0.0.0.0"), port);
       this.listener.Start();
 
       while (is_active) {
@@ -38,7 +38,7 @@ namespace Examples {
 
 		private void response_status_init() {
 			this.res_status = new Hashtable();
-	
+
 			res_status.Add(200, "200 Ok");
 			res_status.Add(201, "201 Created");
 			res_status.Add(202, "202 Accepted");
@@ -47,7 +47,7 @@ namespace Examples {
 			res_status.Add(301, "301 Moved Permanently");
 			res_status.Add(302, "302 Redirection");
 			res_status.Add(304, "304 Not Modified");
-	
+
 			res_status.Add(400, "400 Bad Request");
 			res_status.Add(401, "401 Unauthorized");
 			res_status.Add(403, "403 Forbidden");
@@ -61,5 +61,5 @@ namespace Examples {
 		public void log(string EventMessage) {
 			Console.WriteLine(EventMessage);
 		}
-  } 
+  }
 }
