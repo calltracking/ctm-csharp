@@ -6,17 +6,41 @@ using System.Collections;
 using System.Web;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Json;
-using System.Json;
+using Newtonsoft.Json.Linq;
 
 namespace CTM {
   class Response {
-    public string body;
-    public JsonValue data;
+    public string  body;
+    public dynamic data;
+    public bool    error;
+    public string  error_text;
 
     public Response(string _body) {
-      body = _body;
-      //var json = JsonValue.Parse(@"{""simple"":""value1"",""complex"":{""name"":""value2"",""id"":""value3""}}");
-      data = JsonValue.Parse(_body);
+      this.body = _body;
+      this.data = JObject.Parse(_body);
+
+      dynamic status_obj = this.data.GetValue("status");
+      if (status_obj != null){
+        string status_type = status_obj.GetType().ToString();
+        string status = null;
+
+        if      (status_type == "Newtonsoft.Json.Linq.JValue"){ status = this.data.Value<string>("status"); }
+        else if (status_type == "Newtonsoft.Json.Linq.JArray"){ status = (string)status_obj.First;          }
+
+        if (status == "error"){ this.error = true; }
+      }
+
+      string error_text = this.data.Value<string>("error");
+      if (error_text != null){ this.error = true; }
+
+      if (this.error){
+        this.error_text =
+          this.data.Value<string>("reason")  ??
+          this.data.Value<string>("text")    ??
+          this.data.Value<string>("message") ??
+          this.data.Value<string>("error")   ??
+          "unknown server error";
+      }
     }
   }
   class Request {
@@ -44,8 +68,8 @@ namespace CTM {
         _url = _url + "?" + query;
         _req = (HttpWebRequest)WebRequest.Create(_url);
       } else {
-        paramDataBytes = encoding.GetBytes(query);
-        _req.ContentType = "application/x-www-form-urlencoded";
+        paramDataBytes     = encoding.GetBytes(query);
+        _req.ContentType   = "application/x-www-form-urlencoded";
         _req.ContentLength = paramDataBytes.Length;
       }
       //_req.AllowAutoRedirect = true;
@@ -93,9 +117,9 @@ namespace CTM {
       Hashtable headers = new Hashtable();
       if (_token != null) {
         if (parameters == null) { parameters = new Hashtable(); }
-        parameters["auth_token"] = _token.auth_token; 
+        parameters["auth_token"] = _token.auth_token;
       }
-      return request(method, headers, parameters); 
+      return request(method, headers, parameters);
     }
 
   }
