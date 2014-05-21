@@ -13,14 +13,23 @@ namespace CTM {
 
     public static AuthToken authorize(string api_key, string api_secret) {
       string url = CTM.Config.Endpoint() + "/authentication.json";
-      Console.WriteLine(url);
+
+      if (api_key == null || api_secret == null){
+        Console.WriteLine("Error: missing API_KEY, API_SECRET ");
+        return null;
+      }
 
       Hashtable options = new Hashtable();
       options["token"]  = api_key;
       options["secret"] = api_secret;
 
-      CTM.Request req  = new CTM.Request(url);
+      CTM.Request  req = new CTM.Request(url);
       CTM.Response res = req.post(options);
+
+      if (res.error){
+        Console.WriteLine("Error: " + res.error_text);
+        return null;
+      }
 
       return new AuthToken((string)res.data.token, (string)res.data.first_account.id);
     }

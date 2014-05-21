@@ -16,6 +16,7 @@ namespace CTM {
 
       AuthToken token = AuthToken.authorize(Environment.GetEnvironmentVariable("CTM_TOKEN"),
                                             Environment.GetEnvironmentVariable("CTM_SECRET"));
+      if (token == null){ return; }
 
       Console.WriteLine("Got token: " + token.auth_token);
 
