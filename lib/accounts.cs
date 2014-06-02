@@ -37,12 +37,20 @@ namespace CTM {
      */
     public Account(JObject src, CTM.AuthToken token){
       this.token = token;
+      this.update_from(src);
+    }
 
+    /*
+     * Helper for parsing JObjects
+     */
+    private void update_from(JObject src){
       dynamic status_obj = src.GetValue("status");
       string status_type = status_obj.GetType().ToString();
 
-      if      (status_type == "Newtonsoft.Json.Linq.JValue"){ this.status = src.Value<string>("status"); }
-      else if (status_type == "Newtonsoft.Json.Linq.JArray"){ this.status = (string)status_obj.First;    }
+      switch(status_type){
+      case "Newtonsoft.Json.Linq.JValue": this.status = src.Value<string>("status"); break;
+      case "Newtonsoft.Json.Linq.JArray": this.status = (string)status_obj.First;    break;
+      }
 
       this.id       = src.Value<string>("id");
       this.name     = src.Value<string>("name");
@@ -71,8 +79,8 @@ namespace CTM {
       CTM.Request  request = new CTM.Request(CTM.Config.Endpoint() + "/accounts/" + account_id + ".json", token);
       CTM.Response res     = request.get(new Hashtable());
 
-      if (res.error){
-        return ErrorAccount(token, res.error_text, account_id);
+      if (res.error != null){
+        return ErrorAccount(token, res.error, account_id);
       }
 
       return new Account(res.data, token);
@@ -90,19 +98,17 @@ namespace CTM {
 
       CTM.Response res = request.get(parameters);
 
-      if (res.error){
-        Account[] accounts = new Account[1];
-        accounts[0] = ErrorAccount(token, res.error_text);
-        return new Page<Account>(accounts, 0, 1, 1);
+      if (res.error != null){
+        return new Page<Account>(res.error);
 
-      } else{
+      } else {
         int index = 0;
         Account[] accounts = new Account[res.data.accounts.Count];
 
         foreach (JObject account in res.data.accounts.Children<JToken>()) {
           accounts[index++] = new Account(account, token);
         }
-        return new Page<Account>(accounts, page, (int)res.data.total_entries, (int)res.data.total_pages);
+        return new Page<Account>(accounts, (int)res.data.page, (int)res.data.total_entries, (int)res.data.total_pages);
       }
     }
 
@@ -112,24 +118,41 @@ namespace CTM {
     public bool save(){
       string url = CTM.Config.Endpoint() + "/accounts/" + this.id + ".json";
 
-      Hashtable parameters  = new Hashtable();
+      Hashtable parameters            = new Hashtable();
       parameters["account[name]"]     = this.name;
-      parameters["account[website]"]  = this.website;
+      parameters["account[website]"]  = (this.website == null ? "" : this.website);
       parameters["account[timezone]"] = this.timezone;
 
       CTM.Request  request = new CTM.Request(url, token);
       CTM.Response res     = request.put(parameters);
 
-      if (res.error){ Console.WriteLine("Error: " + res.error_text); }
-      return res.error;
+      if (res.error != null){ this.error = res.error; }
+      return res.error == null;
     }
 
+    /*
+     * Reload the account data
+     */
+    public bool reload(){
+      string url = CTM.Config.Endpoint() + "/accounts/" + this.id + ".json";
+
+      CTM.Request  req = new CTM.Request(url, token);
+      CTM.Response res = req.get();
+
+      if (res.error != null){
+        this.error = res.error;
+      } else{
+        this.update_from(res.data);
+      }
+
+      return res.error == null;
+    }
 
     /*
      * Add new account with billing linked to master account
      */
     public Account create() {
-      CTM.Request request = new CTM.Request(CTM.Config.Endpoint() + "/accounts.json", token);
+      string url = CTM.Config.Endpoint() + "/accounts.json";
 
       Hashtable parameters        = new Hashtable();
       parameters["account[name]"]        = this.name;
@@ -137,11 +160,9 @@ namespace CTM {
       parameters["account[timezone]"]    = this.timezone;
       parameters["billing_type"]         = this.shared_billing ? "existing" : "new";
 
-      CTM.Response res = request.post(parameters);
+      CTM.Response res = new CTM.Request(url, token).post(parameters);
 
-      Console.WriteLine(res.body);
-
-      if (res.error){ return ErrorAccount(token, res.error_text); }
+      if (res.error != null){ return ErrorAccount(token, res.error); }
 
       return new Account(res.data, token);
     }

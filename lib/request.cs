@@ -12,34 +12,74 @@ namespace CTM {
   class Response {
     public string  body;
     public dynamic data;
-    public bool    error;
-    public string  error_text;
+    public string  error;
+
+    public Response(HttpWebResponse res){
+      StreamReader web = new StreamReader(res.GetResponseStream(), Encoding.UTF8);
+      this.body = web.ReadToEnd();
+      web.Close();
+
+      try{
+        this.data = JObject.Parse(this.body);
+        this.extract_error();
+
+      } catch (Newtonsoft.Json.JsonReaderException){
+        //Console.WriteLine(e.Message);
+        this.error = ((int)res.StatusCode) + " " + res.StatusDescription;
+      }
+    }
 
     public Response(string _body) {
       this.body = _body;
-      this.data = JObject.Parse(_body);
+
+      try{
+        this.data = JObject.Parse(_body);
+        this.extract_error();
+
+      } catch (Newtonsoft.Json.JsonReaderException e){
+        this.error = "Json.NET parse error: " + e.Message;
+        return;
+      }
+    }
+
+    void extract_error(){
+      if (this.data == null){ return; }
+
+      bool has_error     = false;
+      JArray error_array = null;
 
       dynamic status_obj = this.data.GetValue("status");
       if (status_obj != null){
         string status_type = status_obj.GetType().ToString();
         string status = null;
 
-        if      (status_type == "Newtonsoft.Json.Linq.JValue"){ status = this.data.Value<string>("status"); }
-        else if (status_type == "Newtonsoft.Json.Linq.JArray"){ status = (string)status_obj.First;          }
+        switch (status_type) {
+        case "Newtonsoft.Json.Linq.JValue": status = this.data.Value<string>("status"); break;
+        case "Newtonsoft.Json.Linq.JArray": status = (string)status_obj.First;          break;
+        }
 
-        if (status == "error"){ this.error = true; }
+        if (status != null && status == "error"){ has_error = true; }
       }
 
-      string error_text = this.data.Value<string>("error");
-      if (error_text != null){ this.error = true; }
+      if (this.data.Value<bool?>("success") == false){ has_error = true; }
+      if (this.data.Value<string>("error")  != null ){ has_error = true; }
+      if (this.data.Value<JArray>("errors") != null ){
+        has_error   = true;
+        error_array = this.data.Value<JArray>("errors");
+      }
 
-      if (this.error){
-        this.error_text =
-          this.data.Value<string>("reason")  ??
-          this.data.Value<string>("text")    ??
-          this.data.Value<string>("message") ??
-          this.data.Value<string>("error")   ??
-          "unknown server error";
+      if (has_error){
+        if (error_array != null){
+          this.error = String.Join("\n", error_array.Values<string>());
+
+        }else{
+          this.error =
+            this.data.Value<string>("reason")  ??
+            this.data.Value<string>("text")    ??
+            this.data.Value<string>("message") ??
+            this.data.Value<string>("error")   ??
+            "unknown server error";
+        }
       }
     }
   }
@@ -86,17 +126,19 @@ namespace CTM {
         stream.Write(paramDataBytes, 0, paramDataBytes.Length);
         stream.Close();
       }
-      WebResponse res = null;
+
+      HttpWebResponse res = null;
+
       try {
-        res = _req.GetResponse();
+        res = (HttpWebResponse)_req.GetResponse();
+
       } catch(WebException e) {
-        res = e.Response;
+        res = (HttpWebResponse)e.Response;
       }
 
-      StreamReader web = new StreamReader(res.GetResponseStream(), Encoding.UTF8);
-      Response ctmRes = new Response(web.ReadToEnd());
-      web.Close();
+      Response  ctmRes = new Response(res);
       res.Close();
+
       return ctmRes;
     }
 
