@@ -3,4 +3,9 @@ ctm.dll
 test.exe
 test.exe.mdb
 ctm.dll.mdb
+*.exe
 *.swp
+CTMWebHookExample/obj/
+CTMWebHookExample/bin/
+packages/
+.DS_Store
