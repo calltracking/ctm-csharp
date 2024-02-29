@@ -7,5 +7,7 @@ ctm.dll.mdb
 *.swp
 CTMWebHookExample/obj/
 CTMWebHookExample/bin/
+CTMPhoneExample/bin/
+CTMPhoneExample/obj/
 packages/
 .DS_Store

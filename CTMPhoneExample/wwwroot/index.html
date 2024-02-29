@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <title>Demo CTM Embed Web Application</title>
+
+  <link href="https://getbootstrap.com/docs/5.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+  <script src="https://%%CTM_HOST%%/ctm-phone-embed-1.0.js"></script>
+
+  <style>
+  ctm-phone-embed {
+    height: 750px;
+    min-height: 750px;
+    max-height: 750px;
+    width: 450px;
+    display: block;
+    margin: 0;
+    transition: height 0.5s ;
+    padding: 0;
+    position: relative;
+    z-index: 1;
+  }
+  .live-call {
+    visibility: hidden;
+  }
+  </style>
+
+</head>
+<body>
+  <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Sample Application</a>
+    <div class="navbar-nav">
+      <div class="nav-item text-nowrap">        
+        <a class="nav-link px-3" href="#"><span data-feather="log-out"></span>Sign out</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="container-fluid">
+    <div class="row">
+      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+        <div class="input-group mb-3">
+          <ctm-phone-input class="form-control light transfer-cold"></ctm-phone-input>
+          <button class="btn btn-outline-secondary" type="button" id="button-addon2">Call</button>
+        </div>
+        <div class="input-group mb-3">
+          <ctm-phone-input class="form-control light transfer-warm"></ctm-phone-input>
+          <button class="btn btn-outline-secondary" type="button" id="button-addon2">Call</button>
+        </div>
+        <div class="input-group mb-3">
+          <ctm-phone-input class="form-control light add-number"></ctm-phone-input>
+          <button class="btn btn-outline-secondary" type="button" id="button-addon2">Call</button>
+        </div>
+      </nav>
+
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">        
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom live-call">
+          <h4 class="h4">Agent: <span class='agent-name'></span></h4>   <strong class="text-success">Time On Call: <span class='time-on-call'></span></strong>
+          <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group me-2">
+              <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">Hold</button>
+              <button  type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleNotes"><span data-feather="mic-off"></span>Mute</button>
+              <button  type="button" class="btn btn-outline-success"><span data-feather="phone-off"></span> End Call</button>
+            </div>
+
+          </div>
+        </div>
+
+     
+      <h5>Call Details</h5>
+        <div class="container-fluid">
+          <ctm-phone-embed access="/phone_access" id="phone"></ctm-phone-embed>
+        </div>
+        
+      </main>
+    </div>
+  </div>
+
+</body>
+</html>
