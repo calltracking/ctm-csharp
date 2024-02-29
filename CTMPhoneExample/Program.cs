@@ -22,8 +22,8 @@ Console.WriteLine($"CTM_SECRET: {ctmSecret}");
 Console.WriteLine($"CTM_ACCOUNT_ID: {accountId}");
 
 // To access the phone our user will need to send an authenticated XHR request to this endpoint
-app.MapPost("/phone_access", async context => {
-       var requestUrl = $"https://{ctmHost}/api/v1/accounts/{accountId}/phone_access";
+app.MapPost("/ctm-phone-access", async context => {
+    var requestUrl = $"https://{ctmHost}/api/v1/accounts/{accountId}/phone_access";
 
     // Dummy data for the request
     var email = "demo@example.com"; // This will be included in the response
@@ -74,7 +74,7 @@ app.MapPost("/phone_access", async context => {
     }
 });
 
-app.MapGet("/device", async context =>
+app.MapGet("/ctm-device", async context =>
 {
     var filePath = Path.Combine(app.Environment.WebRootPath, "device.html");
     if (File.Exists(filePath))
@@ -120,6 +120,21 @@ app.MapGet("/favicon.ico", async context =>
     {
         context.Response.ContentType = "image/x-icon";
         await context.Response.SendFileAsync(faviconPath);
+    }
+    else
+    {
+        context.Response.StatusCode = StatusCodes.Status404NotFound;
+        await context.Response.WriteAsync("Favicon not found");
+    }
+});
+
+app.MapGet("/app.js", async context =>
+{
+    var appPath = Path.Combine(app.Environment.WebRootPath, "app.js");
+    if (File.Exists(appPath))
+    {
+        context.Response.ContentType = "application/javascript";
+        await context.Response.SendFileAsync(appPath);
     }
     else
     {

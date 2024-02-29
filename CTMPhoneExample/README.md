@@ -26,3 +26,17 @@ and windows powershell:
 ```
 $env:CTM_SECRET="your_actual_auth_token_here"
 ```
+
+
+# Building
+
+```
+dotnet build
+```
+
+
+# Running
+
+```
+dotnet run
+```

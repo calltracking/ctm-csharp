@@ -1,0 +1,57 @@
+/* 
+  Example CallTrackingMetrics Phone Embed
+*/
+
+function main() {
+  const phone = document.querySelector("ctm-phone-embed");
+  console.log("CallTrackingMetrics Phone Embed Example", phone);
+  phone.addEventListener('ctm:ready', (e) => {
+    console.log('ctm:ready', e);
+    phone.style.visibility = 'visible';
+    // device element when not popout is created automatically one once ready we can interact with it
+    // end user has to click into the frame to enable audio for incoming ringing and call audio
+    const device = document.querySelector('ctm-device-embed');
+    device.scrollIntoView({ behavior: 'smooth' });
+  });
+
+  // each time the agent status changes the status event will fire.
+  phone.addEventListener('ctm:status', (e) => {
+    const status = e.detail.status;
+    document.getElementById('status').innerHTML = status;
+  });
+
+  // when a phone call or activity is in progress this event fill trigger
+  phone.addEventListener('ctm:live-activity', (e) => {
+    const call = e.detail.activity;
+    document.querySelectorAll(".live-call").forEach((el) => {
+      el.classList.add("active");
+    });
+  });
+
+  phone.addEventListener('ctm:end-activity', (e) => {
+    const call = e.detail.activity;
+    document.querySelectorAll(".live-call").forEach((el) => {
+      el.classList.remove("active");
+    });
+  });
+
+  // tell the device in to make a phone call when an element is clicked with a phone number - be sure the number is formatted with +E.164
+  // by default the user's tracking number will be used as the caller id
+  document.querySelectorAll('.call-button').forEach((el) => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      const phoneNumber = e.currentTarget.getAttribute('href').replace('tel:', '');
+      phone.call(phoneNumber);
+    });
+  });
+
+  document.querySelectorAll(".start-call").forEach((el) => {
+    el.addEventListener('click', (e) => {
+      e.preventDefault();
+      const phoneNumber = e.currentTarget.closest(".row").querySelector("ctm-phone-input").value;
+      phone.call(phoneNumber);
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', main);

@@ -15,23 +15,29 @@
     height: 750px;
     min-height: 750px;
     max-height: 750px;
-    width: 450px;
+    width: 270px;
     display: block;
     margin: 0;
     transition: height 0.5s ;
     padding: 0;
     position: relative;
     z-index: 1;
+    visibility: hidden;
   }
   .live-call {
     visibility: hidden;
+    display: none;
+  }
+  .live-call.active {
+    visibility: visible;
+    display: block;
   }
   </style>
 
 </head>
 <body>
   <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Sample Application</a>
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="/" id="status">...</a>
     <div class="navbar-nav">
       <div class="nav-item text-nowrap">        
         <a class="nav-link px-3" href="#"><span data-feather="log-out"></span>Sign out</a>
@@ -42,18 +48,18 @@
   <div class="container-fluid">
     <div class="row">
       <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-        <div class="input-group mb-3">
-          <ctm-phone-input class="form-control light transfer-cold"></ctm-phone-input>
-          <button class="btn btn-outline-secondary" type="button" id="button-addon2">Call</button>
+        <div class="live-call">
+          <div class="input-group mb-3">
+            <ctm-phone-input class="form-control light transfer-cold" country="US" picker="off"></ctm-phone-input>
+            <button class="btn btn-outline-secondary" type="button" id="button-addon2">Transfer</button>
+          </div>
+          <div class="input-group mb-3">
+            <ctm-phone-input class="form-control light add-number" country="US" picker="off"></ctm-phone-input>
+            <button class="btn btn-outline-secondary" type="button" id="button-addon2">Add</button>
+          </div>
         </div>
-        <div class="input-group mb-3">
-          <ctm-phone-input class="form-control light transfer-warm"></ctm-phone-input>
-          <button class="btn btn-outline-secondary" type="button" id="button-addon2">Call</button>
-        </div>
-        <div class="input-group mb-3">
-          <ctm-phone-input class="form-control light add-number"></ctm-phone-input>
-          <button class="btn btn-outline-secondary" type="button" id="button-addon2">Call</button>
-        </div>
+        <!--<ctm-phone-embed popout="/ctm-device" access="/ctm-phone-access" id="phone"></ctm-phone-embed>-->
+        <ctm-phone-embed auto="true" access="/ctm-phone-access" id="phone"></ctm-phone-embed>
       </nav>
 
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">        
@@ -67,17 +73,28 @@
             </div>
 
           </div>
+
+       
         </div>
 
-     
-      <h5>Call Details</h5>
         <div class="container-fluid">
-          <ctm-phone-embed access="/phone_access" id="phone"></ctm-phone-embed>
+          <form>
+            <div class="row g-3 align-items-center">
+              <div class="col-11">
+                <label>Phone Number</label>
+                <ctm-phone-input class="form-control light add-number" country="US" picker="off"></ctm-phone-input>
+              </div>
+              <div class="col-1">
+                <button class="form-control btn btn-primary start-call" type="button" id="button-addon2" style="padding: 16px;margin-top: 20px;">Call</button>
+              </div>
+            </div>
+          </form>
         </div>
         
       </main>
     </div>
   </div>
 
+  <script src="/app.js"></script>
 </body>
 </html>
