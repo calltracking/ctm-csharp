@@ -22,7 +22,6 @@
     padding: 0;
     position: relative;
     z-index: 1;
-    visibility: hidden;
   }
   .live-call {
     visibility: hidden;
@@ -50,16 +49,16 @@
       <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
         <div class="live-call">
           <div class="input-group mb-3">
-            <ctm-phone-input class="form-control light transfer-cold" country="US" picker="off"></ctm-phone-input>
-            <button class="btn btn-outline-secondary" type="button" id="button-addon2">Transfer</button>
+            <ctm-phone-input class="form-control light transfer-cold" value="US" picker="off"></ctm-phone-input>
+            <button class="btn btn-outline-secondary transfer-to-number-button" type="button">Transfer</button>
           </div>
           <div class="input-group mb-3">
-            <ctm-phone-input class="form-control light add-number" country="US" picker="off"></ctm-phone-input>
-            <button class="btn btn-outline-secondary" type="button" id="button-addon2">Add</button>
+            <ctm-phone-input class="form-control light add-number" value="US" picker="off"></ctm-phone-input>
+            <button class="btn btn-outline-secondary add-number-button" type="button">Add #</button>
           </div>
         </div>
-        <!--<ctm-phone-embed popout="/ctm-device" access="/ctm-phone-access" id="phone"></ctm-phone-embed>-->
-        <ctm-phone-embed auto="true" access="/ctm-phone-access" id="phone"></ctm-phone-embed>
+        <ctm-phone-embed popout="/ctm-device" access="/ctm-phone-access" id="phone"></ctm-phone-embed>
+        <!--<ctm-phone-embed auto="true" access="/ctm-phone-access" id="phone"></ctm-phone-embed>-->
       </nav>
 
       <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">        
@@ -67,9 +66,9 @@
           <h4 class="h4">Agent: <span class='agent-name'></span></h4>   <strong class="text-success">Time On Call: <span class='time-on-call'></span></strong>
           <div class="btn-toolbar mb-2 mb-md-0">
             <div class="btn-group me-2">
-              <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">Hold</button>
-              <button  type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#exampleNotes"><span data-feather="mic-off"></span>Mute</button>
-              <button  type="button" class="btn btn-outline-success"><span data-feather="phone-off"></span> End Call</button>
+              <button type="button" class="btn btn-outline-secondary hold-button" data-bs-toggle="modal" data-bs-target="#exampleModal">Hold</button>
+              <button  type="button" class="btn btn-outline-secondary mute-button" data-bs-toggle="modal" data-bs-target="#exampleNotes"><span data-feather="mic-off"></span>Mute</button>
+              <button  type="button" class="btn btn-outline-success end-call-button"><span data-feather="phone-off"></span> End Call</button>
             </div>
 
           </div>
@@ -82,10 +81,10 @@
             <div class="row g-3 align-items-center">
               <div class="col-11">
                 <label>Phone Number</label>
-                <ctm-phone-input class="form-control light add-number" country="US" picker="off"></ctm-phone-input>
+                <ctm-phone-input class="form-control light start-call-number" value="US" picker="off"></ctm-phone-input>
               </div>
               <div class="col-1">
-                <button class="form-control btn btn-primary start-call" type="button" id="button-addon2" style="padding: 16px;margin-top: 20px;">Call</button>
+                <button class="form-control btn btn-primary start-call" type="button" style="padding: 16px;margin-top: 20px;">Call</button>
               </div>
             </div>
           </form>

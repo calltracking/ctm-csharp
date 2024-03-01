@@ -11,7 +11,9 @@ function main() {
     // device element when not popout is created automatically one once ready we can interact with it
     // end user has to click into the frame to enable audio for incoming ringing and call audio
     const device = document.querySelector('ctm-device-embed');
-    device.scrollIntoView({ behavior: 'smooth' });
+    if (device) {
+      device.scrollIntoView({ behavior: 'smooth' });
+    }
   });
 
   // each time the agent status changes the status event will fire.
@@ -26,6 +28,12 @@ function main() {
     document.querySelectorAll(".live-call").forEach((el) => {
       el.classList.add("active");
     });
+  });
+
+  phone.addEventListener('ctm:live-activity-progress', (e) => {
+    const activity = e.detail.activity;
+    const progressText = e.detail.progressText;
+    document.querySelector(".time-on-call").innerHTML = progressText;
   });
 
   phone.addEventListener('ctm:end-activity', (e) => {
@@ -45,12 +53,37 @@ function main() {
     });
   });
 
-  document.querySelectorAll(".start-call").forEach((el) => {
-    el.addEventListener('click', (e) => {
-      e.preventDefault();
-      const phoneNumber = e.currentTarget.closest(".row").querySelector("ctm-phone-input").value;
-      phone.call(phoneNumber);
-    });
+  // on enter keypress from the input field
+  document.querySelector('.start-call-number').addEventListener('enterValidNumber', (e) => {
+    const phoneNumber = e.detail.value;
+    phone.call(phoneNumber);
+  });
+
+  document.querySelector(".start-call").addEventListener('click', (e) => {
+    e.preventDefault();
+    const phoneNumber = e.currentTarget.closest(".row").querySelector("ctm-phone-input").value;
+    phone.call(phoneNumber);
+  });
+
+  document.querySelector('.hold-button').addEventListener('click', (e) => {
+    phone.hold();
+  });
+
+  document.querySelector('.mute-button').addEventListener('click', (e) => {
+    phone.mute();
+  });
+
+  document.querySelector('.end-call-button').addEventListener('click', (e) => {
+    phone.hangup();
+  });
+  document.querySelector('.transfer-to-number-button').addEventListener('click', (e) => {
+    const dial = e.currentTarget.closest('.input-group').querySelector('ctm-phone-input').value;
+    phone.transfer({ object: 'receiving_number', dial });
+  });
+
+  document.querySelector('.add-number-button').addEventListener('click', (e) => {
+    const dial = e.currentTarget.closest('.input-group').querySelector('ctm-phone-input').value;
+    phone.add({ object: 'receiving_number', dial });
   });
 }
 
