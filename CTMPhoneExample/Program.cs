@@ -11,8 +11,8 @@ using System.Threading.Tasks;
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
-var ctmSecret = Environment.GetEnvironmentVariable("CTM_SECRET");
-var ctmToken  = Environment.GetEnvironmentVariable("CTM_TOKEN");
+var ctmSecret  = Environment.GetEnvironmentVariable("CTM_SECRET");
+var ctmToken   = Environment.GetEnvironmentVariable("CTM_TOKEN");
 var accountId  = Environment.GetEnvironmentVariable("CTM_ACCOUNT_ID");
 var ctmHost    = Environment.GetEnvironmentVariable("CTM_HOST") ?? "app.calltrackingmetrics.com";
 

@@ -40,3 +40,6 @@ dotnet build
 ```
 dotnet run
 ```
+
+# CTM Access API
+To enable single sign-on with CTM the application sends a request to the CTM Access API to get a token. This token is then used to authenticate the user with the CTM API. The token is valid for 5 minutes and can be used to authenticate the user with the CTM API.
