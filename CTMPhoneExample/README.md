@@ -8,8 +8,8 @@ Example C# Application to connect CallTrackingMetrics embeddable softphone into 
 To run the example web application you will need to ensure the following environment variables are set
 
 ```
-CTM_TOKEN: Your API key
-CTM_SECRET: Your API secret key
+CTM_TOKEN: Your API Access key
+CTM_SECRET: Your API Secret key
 CTM_ACCOUNT_ID: Your CTM Account ID
 CTM_HOST: app.calltrackingmetrics.com
 ```
