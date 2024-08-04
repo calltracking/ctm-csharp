@@ -2,9 +2,29 @@
   Example CallTrackingMetrics Phone Embed
 */
 
-function main() {
+async function refreshToken() {
+  const res = await fetch("/ctm-phone-access", { method: "POST", headers: { "Content-Type": "application/json" }});
+  const data = await res.json();
+
+  // on load we'll set the token...
+  phone.accessToken = data;
+}
+
+async function main() {
   const phone = document.querySelector("ctm-phone-embed");
   console.log("CallTrackingMetrics Phone Embed Example", phone);
+
+  // fires an event 30/60 seconds before the token expires
+  phone.addEventListener("ctm:tokenExpiringSoon", refreshToken);
+
+  // fires an event when the token is required
+  phone.addEventListener("ctm:requiresToken", refreshToken);
+
+  // fires an event when the token is assigned via accessToken= 
+  phone.addEventListener("ctm:accessTokenAssigned", async (e) => {
+    console.log("did we assign the token");
+  });
+
   phone.addEventListener('ctm:ready', (e) => {
     console.log('ctm:ready', e);
     phone.style.visibility = 'visible';
@@ -22,7 +42,7 @@ function main() {
     document.getElementById('status').innerHTML = status;
   });
 
-  // when a phone call or activity is in progress this event fill trigger
+  // when a phone call or activity is in progress this event will trigger
   phone.addEventListener('ctm:live-activity', (e) => {
     const call = e.detail.activity;
     document.querySelectorAll(".live-call").forEach((el) => {
@@ -30,12 +50,14 @@ function main() {
     });
   });
 
+  // while a call is in progress this event will trigger
   phone.addEventListener('ctm:live-activity-progress', (e) => {
     const activity = e.detail.activity;
     const progressText = e.detail.progressText;
     document.querySelector(".time-on-call").innerHTML = progressText;
   });
 
+  // when a phone call or activity ends this event will trigger
   phone.addEventListener('ctm:end-activity', (e) => {
     const call = e.detail.activity;
     document.querySelectorAll(".live-call").forEach((el) => {
